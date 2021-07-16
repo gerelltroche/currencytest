@@ -1,0 +1,70 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <title>Currency Rates</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="Currency Rate Exchanger">
+  <meta property="og:type" content=website">
+  <meta property="og:url" content="http://localhost:3000">
+  <meta property="og:image" content="/tile.png">
+
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
+  <!-- Place favicon.ico in the root directory -->
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/main.css">
+
+  <meta name="theme-color" content="#1b2a33">
+</head>
+
+<body>
+
+  <main>
+    <nav class="Header">
+
+      <h1>Currency Exchange</h1>
+      <form>
+
+        <label for="selected-currency">Select a Currency:</label>
+        <select name="selected currency" id="selected-currency">
+<!--          Need to inject all options in here-->
+          <option value="USD">USD</option>
+          <option value="AFN">AFN</option>
+        </select>
+
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" value="2020-07-16" min="2020-01-01" max="2020-07-16"/>
+      </form>
+
+    </nav>
+
+    <article id="table">
+      <div id="firstrow" class="row">
+        <div>Currency</div>
+        <div>History (Yesterday)</div>
+        <div>Exchange Rate</div>
+      </div>
+      <div class="row">
+        <div>AFF</div>
+        <div>V 5%</div>
+        <div>53.52</div>
+      </div>
+      <div class="row">
+        <div>AFE</div>
+        <div>V 10%</div>
+        <div>533.52</div>
+      </div>
+    </article>
+
+  </main>
+  <script src="js/plugins.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+
+</html>
