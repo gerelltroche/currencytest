@@ -1,9 +1,10 @@
 import tableItem from "./tableItem"
-import {getCurrencyList, getCurrencyPrices} from "./plugins"
+import {getCurrencyList, getCurrencyPrices, getHistoricalPrices} from "./plugins"
 
 
 let itemslist = []
-let priceslist = {}
+let pricesdict = {}
+let historicaldict = {}
 
 const createCurrencyItems = (currencyResponse) => {
 
@@ -52,7 +53,7 @@ const tableUpdateHandler = (selection, currencylist) => {
 
   for (const currency of list) {
 
-    const row = tableItem(currency, 25)
+    const row = tableItem(currency, historicaldict[currency].toFixed(2), pricesdict[currency].toFixed(2))
     table.appendChild(row)
 
   }
@@ -68,20 +69,25 @@ getCurrencyList()
   .then(
     (e) => {
       const itemsJSON = JSON.parse(e.target.response).symbols
-      createCurrencyItems(itemsJSON)
       itemslist = Object.keys(itemsJSON)
+      createCurrencyItems(itemsJSON)
     },
     (e) => console.log('handle error')
   )
-getCurrencyPrices()
+getCurrencyPrices('USD')
   .then(
     (e) => {
-      const pricesJSON = JSON.parse(e.target.response)
-      console.log(pricesJSON)
+      pricesdict = JSON.parse(e.target.response).rates
+    },
+    (e) => console.log('handle error')
+  )
+getHistoricalPrices('2021-07-15', 'USD')
+  .then(
+    (e) => {
+      historicaldict = JSON.parse(e.target.response).rates
     },
     (e) => console.log('handle error')
   )
 
 // Injecting Change Handlers
 injectOnCurrencyChangeHandler()
-

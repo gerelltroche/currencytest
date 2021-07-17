@@ -40,5 +40,15 @@ const getCurrencyPrices = (base) => {
   })
 }
 
+const getHistoricalPrices = (date, base) => {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest()
+    xhr.open('get', `${BASEURL}${date}?access_key=${APIKEY}&base=${base}`)
+    xhr.onload = resolve
+    xhr.onerror = reject;
+    xhr.send()
+  })
+}
 
-export { getCurrencyList, getCurrencyPrices }
+
+export { getCurrencyList, getCurrencyPrices, getHistoricalPrices }
