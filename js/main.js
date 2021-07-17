@@ -96,7 +96,6 @@ const onDateChangeHandler = (dateSelection) => {
   const currencySelection = document.getElementById('selected-currency')
 
   if (!currencySelection.value) {
-    console.log(currencySelection)
     for (let i = 0; i < currencySelection.options.length; i++) {
       if (currencySelection.options[i].text === 'EUR') {
         currencySelection.options[i].selected = true
