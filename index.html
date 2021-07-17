@@ -14,7 +14,8 @@
 
   <link rel="manifest" href="site.webmanifest">
   <link rel="apple-touch-icon" href="icon.png">
-  <!-- Place favicon.ico in the root directory -->
+  <link rel="icon" type="image/png" href="icon.png"/>
+  <!-- Need to place a favicon.ico in the root directory -->
 
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/main.css">
@@ -25,20 +26,22 @@
 <body>
 
   <main>
-    <nav class="Header">
-
-      <h1>Currency Exchange</h1>
+    <nav class="header">
+      <div class="title">
+        <img src="icon.png" class="logo" alt="Currency Exchange Logo" draggable="false"/>
+        <h1>Currency Rates</h1>
+      </div>
       <form>
 
         <label for="selected-currency">Select a Currency:</label>
         <select name="selected currency" id="selected-currency">
-<!--          Need to inject all options in here-->
-          <option value="USD">USD</option>
-          <option value="AFN">AFN</option>
+          <!-- Options are Injected Here -->
+          <option id=""></option>
         </select>
 
         <label for="date">Date:</label>
         <input type="date" id="date" name="date" value="2020-07-16" min="2020-01-01" max="2020-07-16"/>
+
       </form>
 
     </nav>
