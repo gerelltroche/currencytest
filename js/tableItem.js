@@ -5,16 +5,22 @@ const tableItem = (name, histrate, rate) => {
 //     <div>${name}</div><div>Percent Change</div><div>${rate}</div>
 // </div>
 
+  // if we get anything that's not a number or integer, change it to a 0
+
+  const numberhistrate = parseFloat(histrate)
+
   const row = document.createElement('div')
-  const percentChange = (rate - histrate) / histrate * 100
-  let modifyer = '^'
-  if (percentChange <= 0) {
-    modifyer = 'V'
+  let percentChange = 0
+
+  if (numberhistrate !== 0) {
+    percentChange = (rate - histrate) / histrate * 100
   }
+
+
 
   row.innerHTML = `
   <div>${name}</div>
-  <div>${modifyer} ${percentChange.toFixed(2)}</div>
+  <div>${percentChange.toFixed(2)}</div>
   <div>${rate}</div>
   `
   row.className = 'row'
