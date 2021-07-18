@@ -282,4 +282,4 @@ getHistoricalPrices('2021-07-15', 'USD')
 // Injecting Change Handlers/Listeners
 injectOnCurrencyChangeHandler()
 injectOnDateChangeHandler()
-//injectExcelButtonHandler() Didn't quite finish this.
+injectExcelButtonHandler() // Didn't quite finish this.
