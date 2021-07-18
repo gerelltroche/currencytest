@@ -1,5 +1,14 @@
 import tableItem from "./tableItem"
-import {getCurrencyList, getCurrencyPrices, getHistoricalPrices, parseYesterday, parseToday} from "./plugins"
+import {
+  chartFillHandler,
+  chartItem } from './chartItem'
+import {
+  getCurrencyList,
+  getCurrencyPrices,
+  getHistoricalPrices,
+  parseYesterday,
+  parseToday,
+  getPast30Days } from "./plugins"
 
 
 let itemslist = []
@@ -47,6 +56,8 @@ const injectOnDateChangeHandler = () => {
 const tableUpdateHandler = (selection, currencylist) => {
 
   const table = document.getElementById('table')
+  const today = document.getElementById('date').value
+
 
   table.innerHTML = `
     <div id="firstrow" class="row">
@@ -63,7 +74,18 @@ const tableUpdateHandler = (selection, currencylist) => {
   for (const currency of list) {
 
     const row = tableItem(currency, historicaldict[currency].toFixed(2), pricesdict[currency].toFixed(2))
+    const chart = chartItem(`chart-${currency}`)
+
+    row.addEventListener('click', (e) => {
+      console.log('clicked')
+      getPast30Days(today, selection, currency).then(
+        (data) => {
+          chartFillHandler(`chart-${currency}`, `30 days of ${currency}`, data)
+      })
+    })
+
     table.appendChild(row)
+    table.appendChild(chart)
 
   }
 }
@@ -172,7 +194,7 @@ getCurrencyList()
         setErrorMessageHandler('Error: Currencies could not be loaded. Please refresh the page.')
       }
     },
-    (e) => setErrorMessageHandler('Error: Currencies could not be loaded. Please refresh the page.') // send a message telling the user to please refresh the page.
+    (e) => setErrorMessageHandler('Error: Currencies could not be loaded. Please refresh the page.')
   )
 
 getCurrencyPrices('USD')
@@ -184,7 +206,7 @@ getCurrencyPrices('USD')
         setErrorMessageHandler('Error: Currency Prices were not received. Please refresh the page.')
       }
     },
-    (e) => setErrorMessageHandler('Error: Server could not be reached. Please refresh the page.') // send a message telling the user to please refresh the page
+    (e) => setErrorMessageHandler('Error: Server could not be reached. Please refresh the page.')
   )
 
 getHistoricalPrices('2021-07-15', 'USD')
@@ -196,10 +218,18 @@ getHistoricalPrices('2021-07-15', 'USD')
         setErrorMessageHandler('Error: Did not receive prices. Please refresh the page.')
       }
     },
-    (e) => setErrorMessageHandler('Error: Server could not be reached. Please refresh the page.') // send a message telling the user to please refresh the page.
+    (e) => setErrorMessageHandler('Error: Server could not be reached. Please refresh the page.')
   )
 
 
-// Injecting Change Handlers
+// Injecting Change Handlers/Listeners
 injectOnCurrencyChangeHandler()
 injectOnDateChangeHandler()
+
+
+// getPast30Days('07/16/2020', 'USD', 'EUR').then(
+//   (data) => {
+//     chartItem('chartContainer', 'yes', data)
+//   }
+// )
+

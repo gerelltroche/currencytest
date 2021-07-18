@@ -54,5 +54,32 @@ const parseToday = (dateAsString) => {
 
 }
 
+const getPast30Days = (todaysDate, base, target) => {
 
-export { getCurrencyList, getCurrencyPrices, getHistoricalPrices, parseYesterday, parseToday }
+  let today = parseToday(todaysDate)
+  const promiseArray = []
+  const resultArray = []
+  const dates = []
+
+    for (let i = 0; i < 30; i++) {
+      promiseArray.push(getHistoricalPrices(today, base))
+      dates.push(today)
+      today = parseYesterday(today)
+    }
+    return Promise.all(promiseArray).then(
+      (promise) => {
+        for (let i in promise) {
+          let result = JSON.parse(promise[i].target.response)
+          resultArray.push({
+            x: new Date(dates[i]),
+            y: result.rates[target]
+          })
+        }
+        return resultArray
+      },
+      (e) => console.log('handle error') // need to handle this error
+    )
+}
+
+
+export { getCurrencyList, getCurrencyPrices, getHistoricalPrices, parseYesterday, parseToday, getPast30Days }
