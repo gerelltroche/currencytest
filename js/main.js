@@ -6,6 +6,8 @@ let itemslist = []
 let pricesdict = {}
 let historicaldict = {}
 
+const setErrorMessageHandler = (message) => document.getElementById('message').innerText = message
+
 const createCurrencyItems = (currencyResponse) => {
 
   // Populate all the options in selected-currency
@@ -23,7 +25,6 @@ const createCurrencyItems = (currencyResponse) => {
     container.appendChild(selection)
 
   }
-
 }
 
 const injectOnCurrencyChangeHandler = () => {
@@ -70,82 +71,132 @@ const tableUpdateHandler = (selection, currencylist) => {
 const onCurrencyChangeHandler = (currencySelection) => {
 
   const dateSelection = document.getElementById('date').value
+  let errorState = false
 
   getCurrencyPrices(currencySelection)
     .then(
       (e) => {
-        pricesdict = JSON.parse(e.target.response).rates
+        if (e.target.response) {
+          pricesdict = JSON.parse(e.target.response).rates
+        } else {
+          setErrorMessageHandler(`Error: ${currencySelection} could not be loaded. Please refresh the page`)
+          errorState = true
+        }
       },
-      (e) => console.log('handle error')
+      (e) => {
+        setErrorMessageHandler(`Error: ${currencySelection} could not be loaded. Please refresh the page.`)
+        errorState = true
+      }
     )
 
   getHistoricalPrices(parseYesterday(dateSelection), currencySelection)
     .then(
       (e) => {
-        historicaldict = JSON.parse(e.target.response).rates
+        if (e.target.response) {
+          historicaldict = JSON.parse(e.target.response).rates
+        } else {
+          setErrorMessageHandler(`Error: Historical prices could not be retrieved. Please refresh the page.`)
+          errorState = true
+        }
       },
-      (e) => console.log('handle error')
+      (e) => {
+        setErrorMessageHandler(`Error: Historical prices could not be retrieved. Please refresh the page.`)
+        errorState = true
+      }
     )
 
-  tableUpdateHandler(currencySelection, itemslist)
-
+  if (!errorState) {
+    tableUpdateHandler(currencySelection, itemslist)
+  }
+  errorState = false
 }
 
 const onDateChangeHandler = (dateSelection) => {
 
   const currencySelection = document.getElementById('selected-currency')
+  let errorState = false
 
+  // Default value is EUR
   if (!currencySelection.value) {
     for (let i = 0; i < currencySelection.options.length; i++) {
       if (currencySelection.options[i].text === 'EUR') {
         currencySelection.options[i].selected = true
-      }
-    }
-  }
-
+      }}}
 
   getHistoricalPrices(parseToday(dateSelection), currencySelection.value)
     .then(
       (e) => {
-        pricesdict = JSON.parse(e.target.response).rates
+        if (e.target.response) {
+          pricesdict = JSON.parse(e.target.response).rates
+        } else {
+          setErrorMessageHandler(`Error: ${currencySelection} could not be loaded. Please refresh the page`)
+          errorState = true
+        }
       },
-      (e) => console.log('handle error')
+      (e) => {
+        setErrorMessageHandler(`Error: ${currencySelection} could not be loaded. Please refresh the page`)
+        errorState = true
+      }
     )
 
   getHistoricalPrices(parseYesterday(dateSelection), currencySelection.value)
     .then(
       (e) => {
-        historicaldict = JSON.parse(e.target.response).rates
+        if (e.target.response) {
+          historicaldict = JSON.parse(e.target.response).rates
+        } else {
+          setErrorMessageHandler(`Error: Historical prices could not be retrieved. Please refresh the page.`)
+          errorState = true
+        }
       },
-      (e) => console.log('handle error')
+      (e) => {
+        setErrorMessageHandler(`Error: Historical prices could not be retrieved. Please refresh the page.`)
+        errorState = true
+      }
     )
 
-  tableUpdateHandler(currencySelection.value, itemslist)
-
+  if (!errorState) {
+    tableUpdateHandler(currencySelection.value, itemslist)
+  }
+  errorState = false
 }
 
 getCurrencyList()
   .then(
     (e) => {
-      const itemsJSON = JSON.parse(e.target.response).symbols
-      itemslist = Object.keys(itemsJSON)
-      createCurrencyItems(itemsJSON)
+      if (e.target.response) {
+        const itemsJSON = JSON.parse(e.target.response).symbols
+        itemslist = Object.keys(itemsJSON)
+        createCurrencyItems(itemsJSON)
+      } else {
+        setErrorMessageHandler('Error: Currencies could not be loaded. Please refresh the page.')
+      }
     },
-    (e) => console.log('handle error')
+    (e) => setErrorMessageHandler('Error: Currencies could not be loaded. Please refresh the page.') // send a message telling the user to please refresh the page.
   )
+
 getCurrencyPrices('USD')
   .then(
     (e) => {
-      pricesdict = JSON.parse(e.target.response).rates
+      if (e.target.response) {
+        pricesdict = JSON.parse(e.target.response).rates
+      } else {
+        setErrorMessageHandler('Error: Currency Prices were not received. Please refresh the page.')
+      }
     },
-    (e) => console.log('handle error')
+    (e) => setErrorMessageHandler('Error: Server could not be reached. Please refresh the page.') // send a message telling the user to please refresh the page
   )
+
 getHistoricalPrices('2021-07-15', 'USD')
   .then(
     (e) => {
-      historicaldict = JSON.parse(e.target.response).rates
+      if (e.target.response) {
+        historicaldict = JSON.parse(e.target.response).rates
+      } else {
+        setErrorMessageHandler('Error: Did not receive prices. Please refresh the page.')
+      }
     },
-    (e) => console.log('handle error')
+    (e) => setErrorMessageHandler('Error: Server could not be reached. Please refresh the page.') // send a message telling the user to please refresh the page.
   )
 
 
