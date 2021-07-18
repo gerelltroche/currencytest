@@ -1,6 +1,6 @@
 {
-  "short_name": "",
-  "name": "",
+  "short_name": "Curr Rates",
+  "name": "Currency Rates",
   "icons": [{
     "src": "icon.png",
     "type": "image/png",

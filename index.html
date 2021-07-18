@@ -26,27 +26,29 @@
 <body>
 
   <main>
-    <nav class="header">
-      <div class="title">
-        <img src="icon.png" class="logo" alt="Currency Exchange Logo" draggable="false"/>
-        <h1>Currency Rates</h1>
-      </div>
-      <form>
 
-        <label for="selected-currency">Currency:</label>
-        <select name="selected currency" id="selected-currency">
-          <!-- Options are Injected Here -->
-          <option id=""></option>
-        </select>
+    <header class="header">
 
-        <label for="date">Date:</label>
-        <input type="date" id="date" name="date" value="2020-07-16" min="2020-01-01" max="2020-07-16"/>
+      <img src="icon.png" alt="Currency Rate Logo" class="logo"/>
+      <h1>Currency Rates</h1>
 
-      </form>
+    </header>
 
+    <nav>
+
+      <label for="selected-currency">$:</label>
+      <select name="selected currency" id="selected-currency" class="selection">
+        <!-- Options are Injected Here -->
+        <option id=""></option>
+      </select>
+
+      <label for="date">Date:</label>
+      <input type="date" id="date" name="date" value="2020-07-16" min="2020-01-01" max="2020-07-16"/>
+      <button type="button" class="hidden" id="excelButton"></button>
     </nav>
 
-    <p id="message">Please select a currency to continue</p>
+    <label id="message">Please select a currency to continue</label>
+
     <article id="table">
       <div id="firstrow" class="row">
         <div>Currency</div>

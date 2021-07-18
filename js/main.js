@@ -53,6 +53,13 @@ const injectOnDateChangeHandler = () => {
 
 }
 
+const injectExcelButtonHandler = () => {
+  const button = document.getElementById('excelButton')
+  button.addEventListener('click', (e) => {
+    exportExcelHandler(historicaldict, document.getElementById('selected-currency').value)
+  })
+}
+
 const tableUpdateHandler = (selection, currencylist) => {
 
   const table = document.getElementById('table')
@@ -76,13 +83,13 @@ const tableUpdateHandler = (selection, currencylist) => {
     const row = tableItem(currency, historicaldict[currency].toFixed(2), pricesdict[currency].toFixed(2))
     const chart = chartItem(`chart-${currency}`)
 
-    row.addEventListener('click', (e) => {
-      console.log('clicked')
+    row.onclick = (e) => {
       getPast30Days(today, selection, currency).then(
         (data) => {
           chartFillHandler(`chart-${currency}`, `30 days of ${currency}`, data)
-      })
-    })
+          tableChartHandler(selection, row, chart)
+        })
+    }
 
     table.appendChild(row)
     table.appendChild(chart)
@@ -90,9 +97,32 @@ const tableUpdateHandler = (selection, currencylist) => {
   }
 }
 
+const tableChartHandler = (selection, row, inputChart) => {
+
+  const table = document.getElementById('table')
+  const today = document.getElementById('date').value
+
+  table.innerHTML = `
+    <div id="firstrow" class="row">
+        <div>Currency</div>
+        <div>History (Yesterday)</div>
+        <div>Exchange Rate</div>
+    </div>
+  `
+
+  row.onclick = (e) => {
+    onDateChangeHandler(today)
+  }
+
+  table.appendChild(row)
+  table.appendChild(inputChart)
+
+}
+
 const onCurrencyChangeHandler = (currencySelection) => {
 
   const dateSelection = document.getElementById('date').value
+  setErrorMessageHandler('loading..')
   let errorState = false
 
   getCurrencyPrices(currencySelection)
@@ -129,6 +159,7 @@ const onCurrencyChangeHandler = (currencySelection) => {
 
   if (!errorState) {
     tableUpdateHandler(currencySelection, itemslist)
+    setErrorMessageHandler('')
   }
   errorState = false
 }
@@ -136,6 +167,7 @@ const onCurrencyChangeHandler = (currencySelection) => {
 const onDateChangeHandler = (dateSelection) => {
 
   const currencySelection = document.getElementById('selected-currency')
+  setErrorMessageHandler('loading..')
   let errorState = false
 
   // Default value is EUR
@@ -179,8 +211,33 @@ const onDateChangeHandler = (dateSelection) => {
 
   if (!errorState) {
     tableUpdateHandler(currencySelection.value, itemslist)
+    setErrorMessageHandler('')
   }
   errorState = false
+}
+
+const exportExcelHandler = (table, filename = '') => {
+  let downloadLink
+  let dataType = 'application/vnd.ms-excel'
+
+  filename = filename ? `${filename}.xls` : 'data.xls'
+
+  downloadLink = document.createElement('a')
+
+  document.body.appendChild(downloadLink)
+
+  if (navigator.msSaveOrOpenBlob) {
+    const blob = new Blob(['\ufeff', table], {
+      type: dataType
+    })
+    navigator.msSaveOrOpenBlob(blob, filename)
+  } else {
+    downloadLink.href = `data:${dataType}, ${table}`
+    downloadLink.download = filename
+    downloadLink.click()
+    downloadLink.remove()
+  }
+
 }
 
 getCurrencyList()
@@ -225,11 +282,4 @@ getHistoricalPrices('2021-07-15', 'USD')
 // Injecting Change Handlers/Listeners
 injectOnCurrencyChangeHandler()
 injectOnDateChangeHandler()
-
-
-// getPast30Days('07/16/2020', 'USD', 'EUR').then(
-//   (data) => {
-//     chartItem('chartContainer', 'yes', data)
-//   }
-// )
-
+//injectExcelButtonHandler() Didn't quite finish this.
